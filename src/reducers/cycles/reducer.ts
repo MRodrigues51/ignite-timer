@@ -21,6 +21,7 @@ export function cyclesReducer(state: CyclesState, action: any) {
       return produce(state, (draft) => {
         draft.cycles.push(action.payload.newCycle)
         draft.activeCycleId = action.payload.newCycle.id
+        console.log(state)
       })
     case ActionTypes.INTERRUPT_CURRENT_CYCLE: {
       const currentCycleIndex = state.cycles.findIndex((cycle) => {

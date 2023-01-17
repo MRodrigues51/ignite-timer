@@ -1,4 +1,10 @@
-import { createContext, ReactNode, useReducer, useState } from 'react'
+import {
+  createContext,
+  ReactNode,
+  useEffect,
+  useReducer,
+  useState,
+} from 'react'
 import {
   addNewCycleAction,
   interruptCurrentCycleAction,
@@ -10,7 +16,7 @@ interface CreateCycleData {
   task: string
   minutesAmount: number
 }
-interface CycleContextType {
+interface CyclesContextType {
   cycles: Cycle[]
   activeCycle: Cycle | undefined
   activeCycleId: string | null
@@ -21,7 +27,7 @@ interface CycleContextType {
   interruptCurrentCycle: () => void
 }
 
-export const CyclesContext = createContext({} as CycleContextType)
+export const CyclesContext = createContext({} as CyclesContextType)
 
 interface CyclesConxtextProviderProps {
   children: ReactNode
@@ -37,6 +43,12 @@ export function CyclesContextProvider({
 
   const [amountSecondsPassed, setAmountSecondsPassed] = useState(0)
 
+  useEffect(() => {
+    const stateJSON = JSON.stringify(cyclesState)
+
+    localStorage.setItem('@ignite-time:cycles-state-1.0.1', stateJSON)
+  }, [cyclesState])
+
   const { cycles, activeCycleId } = cyclesState
 
   const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
@@ -50,7 +62,7 @@ export function CyclesContextProvider({
   }
 
   function createNewCycle(data: CreateCycleData) {
-    const id = String(new Date().getTime)
+    const id = String(new Date().getTime())
 
     const newCycle: Cycle = {
       id,
